@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sream - پلتفرم بازی آنلاین</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0b0b1a 0%, #1a1a2e 50%, #22223b 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 32px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #e11d2d, #c41e2a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            box-shadow: 0 6px 20px rgba(225, 29, 45, 0.35);
+        }
+
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 420px;
+            margin: 0 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4ade80;
+            background: rgba(255, 255, 255, 0.09);
+            box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.08);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            color: #1a1a2e;
+            border: none;
+            font-weight: 600;
+        }
+
+        /* Layout */
+        .main-layout {
+            display: flex;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 24px;
+            gap: 24px;
+        }
+
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .panel:hover {
+            background: rgba(255, 255, 255, 0.055);
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4ade80;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(74, 222, 128, 0.2);
+        }
+
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .category-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #bbb;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.25s;
+            border-right: 3px solid transparent;
+            text-align: right;
+        }
+
+        .category-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(34, 211, 238, 0.10));
+            color: #4ade80;
+            border-right-color: #4ade80;
+        }
+
+        /* Content */
+        .content-area {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateY(-6px);
+            border-color: rgba(74, 222, 128, 0.25);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4ade80, #22d3ee);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        .game-thumbnail {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #2d2d44, #3d3d5c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 52px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover .game-thumbnail::after {
+            opacity: 1;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 52px;
+            height: 52px;
+            background: rgba(74, 222, 128, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            opacity: 0;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(74, 222, 128, 0.3);
+        }
+
+        .game-card:hover .play-overlay {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .game-info {
+            padding: 14px 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .game-meta {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .game-rating {
+            font-size: 12px;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 6px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.07);
+            color: #ddd;
+        }
+
+        .action-btn.play {
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            color: #1a1a2e;
+        }
+
+        .action-btn.play:hover {
+            transform: scale(1.04);
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.25);
+        }
+
+        /* Game Player */
+        .game-player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            background: #08081a;
+            display: none;
+            flex-direction: column;
+        }
+
+        .game-player.active {
+            display: flex;
+        }
+
+        .player-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #12122a, #1e1e38);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .player-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.13);
+        }
+
+        .title-info .name {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .title-info .status {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .player-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ccc;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .control-btn.danger {
+            border-color: rgba(239, 68, 68, 0.25);
+            color: #f87171;
+        }
+
+        .game-canvas-container {
+            flex: 1;
+            position: relative;
+            background: #050510;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .game-canvas-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #0a0a1a;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(74, 222, 128, 0.25);
+            border-radius: 4px;
+        }
+
+        /* Responsive */
+        @media(max-width:1024px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            }
+        }
+
+        @media(max-width:640px) {
+            .header {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 12px 16px;
+            }
+            .search-box {
+                order: 3;
+                flex: 1 1 100%;
+                margin: 0;
+            }
+            .logo-text {
+                font-size: 20px;
+            }
+            .nav-btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 12px;
+            }
+            .section-title {
+                font-size: 22px;
+            }
+            .player-header {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .player-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">🎮</div>
+            <span class="logo-text">Sream</span>
+        </div>
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="جستجوی بازی...">
+        </div>
+        <div class="nav-btns">
+            <button class="nav-btn" onclick="app.toggleFullscreen()">⛶ تمام صفحه</button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="panel">
+                <div class="panel-title">🎮 دسته‌بندی‌ها</div>
+                <div class="categories-list">
+                    <button class="category-btn active" data-category="all">📊 همه</button>
+                    <button class="category-btn" data-category="action">⚡ اکشن</button>
+                    <button class="category-btn" data-category="puzzle">🧩 پازل</button>
+                    <button class="category-btn" data-category="arcade">🕹️ آرکید</button>
+                    <button class="category-btn" data-category="classic">🏆 کلاسیک</button>
+                </div>
+            </div>
+        </aside>
+
+        <div class="content-area">
+            <h1 class="section-title">🎮 بازی‌های آنلاین</h1>
+            <div class="games-grid" id="gamesGrid"></div>
+        </div>
+    </div>
+
+    <!-- Game Player Overlay -->
+    <div class="game-player" id="gamePlayer">
+        <div class="player-header">
+            <div class="player-title">
+                <button class="back-btn" onclick="app.closeGame()">←</button>
+                <div class="title-info">
+                    <div class="name" id="playerGameName">بازی</div>
+                    <div class="status" id="playerStatus">در حال بارگذاری...</div>
+                </div>
+            </div>
+            <div class="player-controls">
+                <button class="control-btn" onclick="app.refreshGame()">🔄 بازنشانی</button>
+                <button class="control-btn danger" onclick="app.closeGame()">✕ بستن</button>
+            </div>
+        </div>
+        <div class="game-canvas-container" id="gameCanvas"></div>
+    </div>
+
+    <script>
+        // ===== GAME DATA =====
+        const GAMES = [{
+            id: 1,
+            name: 'Snake Game',
+            icon: '🐍',
+            category: 'classic',
+            description: 'بازی مار کلاسیک',
+            rating: 4.8,
+            plays: 12500,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#0a0a1a;font-family:Arial}</style></head><body><canvas id="c"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');c.width=600;c.height=400;let s=[{x:10,y:10}],f={x:15,y:15},d={x:1,y:0},sc=0;function u(){let h={x:s[0].x+d.x,y:s[0].y+d.y};if(h.x<0||h.x>29||h.y<0||h.y>19)location.reload();for(let i of s)if(h.x===i.x&&h.y===i.y)location.reload();h.x===f.x&&h.y===f.y?(sc+=10,f={x:Math.floor(Math.random()*30),y:Math.floor(Math.random()*20)}):s.pop();s.unshift(h)}function r(){x.fillStyle='#0a0a1a';x.fillRect(0,0,600,400);x.fillStyle='#4ade80';s.forEach(i=>x.fillRect(i.x*20,i.y*20,18,18));x.fillStyle='#ff6b6b';x.fillRect(f.x*20,f.y*20,18,18);x.fillStyle='#fff';x.font='16px Arial';x.fillText('Score: '+sc,10,390)}document.addEventListener('keydown',e=>{if(e.key==='ArrowUp'&&d.y===0)d={x:0,y:-1};if(e.key==='ArrowDown'&&d.y===0)d={x:0,y:1};if(e.key==='ArrowLeft'&&d.x===0)d={x:-1,y:0};if(e.key==='ArrowRight'&&d.x===0)d={x:1,y:0}});setInterval(()=>{u();r()},100)<\/script></body></html>`
+        }, {
+            id: 2,
+            name: 'Flappy Bird',
+            icon: '🐦',
+            category: 'arcade',
+            description: 'پرواز از لوله‌ها',
+            rating: 4.6,
+            plays: 18900,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#87CEEB}</style></head><body><canvas id="c" width="400" height="600"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');let b={x:50,y:300,r:15,v:0},g=0.6,p=[],sc=0,e=false;setInterval(()=>{x.fillStyle='#87CEEB';x.fillRect(0,0,400,600);x.fillStyle='#FFD700';x.beginPath();x.arc(b.x,b.y,b.r,0,6.28);x.fill();x.fillStyle='#2ECC71';p.forEach(i=>{x.fillRect(i.x,0,60,i.t);x.fillRect(i.x,i.t+120,60,600-i.t-120)});if(!e){b.v+=g;b.y+=b.v;if(b.y+b.r>600||b.y-b.r<0)e=true;if(p.length===0||p[p.length-1].x<200)p.push({x:400,t:Math.random()*300+50});p.forEach((i,j)=>{i.x-=5;if(i.x<-60)p.shift();if(b.x+b.r>i.x&&b.x-b.r<i.x+60&&(b.y-b.r<i.t||b.y+b.r>i.t+120))e=true;if(i.x===350)sc++})}x.fillStyle='#fff';x.font='24px Arial';x.fillText('Score: '+sc,20,50);if(e)x.fillText('Game Over!',120,300)},30);document.addEventListener('click',()=>{b.v=-12})<\/script></body></html>`
+        }, {
+            id: 3,
+            name: 'Brick Breaker',
+            icon: '🧱',
+            category: 'action',
+            description: 'شکستن آجرها',
+            rating: 4.5,
+            plays: 8700,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#0a0a1a}</style></head><body><canvas id="c" width="600" height="400"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');let p={x:250,y:370,w:100,h:10},b={x:300,y:350,r:5,vx:3,vy:-3},br=[],sc=0;for(let r=0;r<4;r++)for(let i=0;i<10;i++)br.push({x:i*60,y:r*20+20,w:58,h:18,a:true});document.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();p.x=Math.max(0,Math.min(e.clientX-r.left-50,600-100))});setInterval(()=>{x.fillStyle='#0a0a1a';x.fillRect(0,0,600,400);x.fillStyle='#4ade80';x.fillRect(p.x,p.y,p.w,p.h);x.fillStyle='#22d3ee';x.beginPath();x.arc(b.x,b.y,b.r,0,6.28);x.fill();x.fillStyle='#ff6b6b';br.forEach(i=>{if(i.a)x.fillRect(i.x,i.y,i.w,i.h)});b.x+=b.vx;b.y+=b.vy;if(b.x-b.r<0||b.x+b.r>600)b.vx*=-1;if(b.y-b.r<0)b.vy*=-1;if(b.y>400){alert('Game Over! Score: '+sc);location.reload()}if(b.y+b.r>p.y&&b.x>p.x&&b.x<p.x+p.w)b.vy*=-1;br.forEach(i=>{if(i.a&&b.x>i.x&&b.x<i.x+i.w&&b.y>i.y&&b.y<i.y+i.h){i.a=false;sc+=10;b.vy*=-1}});x.fillStyle='#fff';x.font='16px Arial';x.fillText('Score: '+sc,10,30);if(br.every(i=>!i.a)){alert('You Win! Score: '+sc);location.reload()}},30)<\/script></body></html>`
+        }, {
+            id: 4,
+            name: 'Pong Game',
+            icon: '🎾',
+            category: 'classic',
+            description: 'تنیس دو بازی‌کننده',
+            rating: 4.7,
+            plays: 11200,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#0a0a1a}</style></head><body><canvas id="c" width="800" height="400"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');let p1={x:20,y:150,w:10,h:100},p2={x:770,y:150,w:10,h:100},b={x:400,y:200,r:8,vx:5,vy:5},s1=0,s2=0;document.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();p1.y=Math.max(0,Math.min(e.clientY-r.top-50,300))});setInterval(()=>{x.fillStyle='#0a0a1a';x.fillRect(0,0,800,400);x.fillStyle='#4ade80';x.fillRect(p1.x,p1.y,p1.w,p1.h);x.fillStyle='#ff6b6b';x.fillRect(p2.x,p2.y,p2.w,p2.h);x.fillStyle='#fff';x.beginPath();x.arc(b.x,b.y,b.r,0,6.28);x.fill();b.x+=b.vx;b.y+=b.vy;if(b.y-b.r<0||b.y+b.r>400)b.vy*=-1;if(b.y+b.r>p1.y&&b.y-b.r<p1.y+p1.h&&b.x-b.r<p1.x+p1.w)b.vx=5;if(b.y+b.r>p2.y&&b.y-b.r<p2.y+p2.h&&b.x+b.r>p2.x)b.vx=-5;if(b.x<0){s1++;b={x:400,y:200,r:8,vx:5,vy:5}}if(b.x>800){s2++;b={x:400,y:200,r:8,vx:-5,vy:5}}p2.y=b.y-50+Math.random()*40-20;x.font='28px Arial';x.textAlign='center';x.fillText(s1+' - '+s2,400,50)},30)<\/script></body></html>`
+        }, {
+            id: 5,
+            name: 'Space Shooter',
+            icon: '🚀',
+            category: 'action',
+            description: 'شلیک به دشمنان',
+            rating: 4.8,
+            plays: 15600,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#0a0a1a}</style></head><body><canvas id="c" width="600" height="600"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');let s={x:300,y:500,w:30},bu=[],en=[],sc=0;document.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();s.x=Math.max(15,Math.min(e.clientX-r.left,600-15))});document.addEventListener('click',()=>{bu.push({x:s.x-2,y:s.y})});setInterval(()=>{x.fillStyle='#0a0a1a';x.fillRect(0,0,600,600);x.fillStyle='#4ade80';x.beginPath();x.moveTo(s.x,s.y-15);x.lineTo(s.x-15,s.y+15);x.lineTo(s.x+15,s.y+15);x.fill();x.fillStyle='#22d3ee';bu.forEach((i,j)=>{x.fillRect(i.x,i.y,4,10);i.y-=7;if(i.y<0)bu.splice(j,1)});x.fillStyle='#ff6b6b';en.forEach((i,j)=>{x.fillRect(i.x,i.y,20,20);i.y+=3;if(i.y>600)en.splice(j,1)});bu.forEach((i,j)=>{en.forEach((e,k)=>{if(i.x>e.x&&i.x<e.x+20&&i.y>e.y&&i.y<e.y+20){en.splice(k,1);bu.splice(j,1);sc+=10}})});en.forEach(i=>{if(i.y+20>s.y-15&&i.x+20>s.x-15&&i.x<s.x+15){alert('Game Over! Score: '+sc);location.reload()}});if(Math.random()<0.02)en.push({x:Math.random()*580,y:-20});x.fillStyle='#fff';x.font='20px Arial';x.fillText('Score: '+sc,20,30)},30)<\/script></body></html>`
+        }, {
+            id: 6,
+            name: 'Color Match',
+            icon: '🎨',
+            category: 'puzzle',
+            description: 'تطابق رنگ‌ها',
+            rating: 4.7,
+            plays: 9800,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#0a0a1a;font-family:Arial}</style></head><body><canvas id="c" width="400" height="500"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');const col=['#ff6b6b','#4ade80','#22d3ee','#fbbf24','#a78bfa','#f472b6'];let bo=[],sc=0;function sp(){const a=Math.random()*340,e=Math.random()*400,f=col[Math.floor(Math.random()*col.length)],t=col[Math.floor(Math.random()*col.length)];bo.push({x:a,y:e,c:f,t:t,r:30})}c.addEventListener('click',i=>{const e=c.getBoundingClientRect(),a=i.clientX-e.left,f=i.clientY-e.top;bo.forEach((n,o)=>{const l=Math.sqrt((n.x-a)**2+(n.y-f)**2);if(l<n.r&&n.c===n.t){sc+=10;bo.splice(o,1);sp()}})});setInterval(()=>{x.fillStyle='#0a0a1a';x.fillRect(0,0,400,500);bo.forEach(i=>{x.fillStyle=i.c;x.beginPath();x.arc(i.x,i.y,i.r,0,6.28);x.fill()});x.fillStyle='#fff';x.font='18px Arial';x.fillText('Score: '+sc,10,490)},30);sp();sp()<\/script></body></html>`
+        }, {
+            id: 7,
+            name: 'Quick Tap',
+            icon: '⚡',
+            category: 'arcade',
+            description: 'سرعت و دقت',
+            rating: 4.8,
+            plays: 14200,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#0a0a1a;font-family:Arial}</style></head><body><div id="s" style="color:#fff;font-size:20px;padding:20px">Score: 0</div><canvas id="c" width="600" height="500"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d'),d=document.getElementById('s');let sc=0,ta=[];function sp(){const r=Math.random()*550+25,o=Math.random()*450+25;ta=[{x:r,y:o,r:30,a:true}]}c.addEventListener('click',i=>{const e=c.getBoundingClientRect(),a=i.clientX-e.left,t=i.clientY-e.top;ta.forEach(n=>{const o=Math.sqrt((n.x-a)**2+(n.y-t)**2);if(o<n.r&&n.a){sc++;n.a=false;d.textContent='Score: '+sc}})});setInterval(()=>{x.fillStyle='#0a0a1a';x.fillRect(0,0,600,500);ta.forEach(i=>{x.fillStyle=i.a?'#4ade80':'#ff6b6b';x.beginPath();x.arc(i.x,i.y,i.r,0,6.28);x.fill();x.fillStyle='#0a0a1a';x.font='20px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText('TAP',i.x,i.y)})},30);setInterval(sp,500);sp()<\/script></body></html>`
+        }, {
+            id: 8,
+            name: 'Dino Run',
+            icon: '🦕',
+            category: 'action',
+            description: 'دایناسور دونده',
+            rating: 4.7,
+            plays: 19300,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#87CEEB}</style></head><body><canvas id="c" width="800" height="400"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');let d={x:50,y:300,w:30,h:30,vy:0,j:false},ob=[],g=0.6,sc=0;document.addEventListener('keydown',e=>{(e.key===' '||e.key==='ArrowUp')&&!d.j&&(d.vy=-12,d.j=true)});setInterval(()=>{x.fillStyle='#87CEEB';x.fillRect(0,0,800,400);x.fillStyle='#228B22';x.fillRect(0,350,800,50);d.vy+=g;d.y+=d.vy;if(d.y+d.h>=350){d.y=350-d.h;d.j=false;d.vy=0}sc+=0.1;x.fillStyle='#4ade80';x.fillRect(d.x,d.y,d.w,d.h);x.fillStyle='#ff6b6b';ob.forEach((i,e)=>{x.fillRect(i.x,i.y,i.w,i.h);i.x-=8;if(i.x<-20)ob.splice(e,1);if(d.x<i.x+i.w&&d.x+d.w>i.x&&d.y+d.h>i.y){alert('Game Over! Score: '+Math.floor(sc));location.reload()}});if(Math.random()<0.02)ob.push({x:800,y:320,w:20,h:30});x.fillStyle='#fff';x.font='20px Arial';x.fillText('Score: '+Math.floor(sc),20,40)},30)<\/script></body></html>`
+        }, {
+            id: 9,
+            name: 'Star Catcher',
+            icon: '⭐',
+            category: 'arcade',
+            description: 'جمع‌آوری ستاره‌ها',
+            rating: 4.6,
+            plays: 10500,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#0a0a1a}</style></head><body><canvas id="c" width="600" height="600"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');let p={x:300,y:550,w:40},st=[],sc=0,tm=30;document.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();p.x=Math.max(20,Math.min(e.clientX-r.left,600-20))});setInterval(()=>{x.fillStyle='#0a0a1a';x.fillRect(0,0,600,600);x.fillStyle='#4ade80';x.fillRect(p.x-20,p.y-20,40,40);x.fillStyle='#fbbf24';st.forEach((i,e)=>{x.beginPath();x.arc(i.x,i.y,8,0,6.28);x.fill();i.y+=3;if(i.x>p.x-20&&i.x<p.x+20&&i.y>p.y-20&&i.y<p.y+20){sc++;st.splice(e,1)}if(i.y>600)st.splice(e,1)});if(Math.random()<0.04)st.push({x:Math.random()*580+10,y:-10});x.fillStyle='#fff';x.font='18px Arial';x.fillText('Score: '+sc+' | Time: '+tm,20,30)},30);setInterval(()=>{tm--;if(tm===0){alert('Time Up! Score: '+sc);location.reload()}},1000)<\/script></body></html>`
+        }, {
+            id: 10,
+            name: 'Memory Game',
+            icon: '🧠',
+            category: 'puzzle',
+            description: 'بازی خاطرات',
+            rating: 4.9,
+            plays: 16700,
+            html: `<!DOCTYPE html><html><head><style>*{margin:0;overflow:hidden}body{background:#0a0a1a;font-family:Arial}</style></head><body><canvas id="c" width="400" height="500"></canvas><script>const c=document.getElementById('c'),x=c.getContext('2d');const i=['🌟','🎨','🎭','🎪','🎬','🎤','🎧','🎵'];let ca=[],fo=-1,se=-1,m=0,re=[],ma=[];for(let e=0;e<2;e++)ca=ca.concat(i);ca=ca.sort(()=>Math.random()-0.5);for(let e=0;e<16;e++)re[e]=false,ma[e]=false;c.addEventListener('click',e=>{const n=c.getBoundingClientRect(),o=Math.floor((e.clientX-n.left)/100),l=Math.floor((e.clientY-n.top)/125),a=l*4+o;if(re[a]||ma[a])return;if(fo===-1){fo=a;re[a]=true}else if(se===-1&&a!==fo){se=a;re[a]=true;if(ca[fo]===ca[se]){ma[fo]=true;ma[se]=true;m++;fo=-1;se=-1;ma.every(e=>e)&&alert('You Won! Matches: '+m)}else setTimeout(()=>{re[fo]=false;re[se]=false;fo=-1;se=-1},500)}dr()});function dr(){x.fillStyle='#0a0a1a';x.fillRect(0,0,400,500);for(let e=0;e<16;e++){const n=e%4*100,o=Math.floor(e/4)*125;x.fillStyle=ma[e]?'rgba(74,222,128,0.2)':'rgba(255,255,255,0.1)';x.fillRect(n,o,95,120);x.fillStyle='#fff';x.font='40px Arial';x.textAlign='center';x.textBaseline='middle';if(re[e]||ma[e])x.fillText(ca[e],n+47,o+60);else{x.fillStyle='#4ade80';x.fillText('?',n+47,o+60)}}x.fillStyle='#888';x.font='16px Arial';x.textAlign='left';x.fillText('Matches: '+m,10,490)}dr();setInterval(dr,30)<\/script></body></html>`
+        }];
+
+        // ===== APP CLASS =====
+        class App {
+            constructor() {
+                this.games = GAMES;
+                this.filtered = [...GAMES];
+                this.category = 'all';
+                this.render();
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                // Category buttons
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const cat = btn.dataset.category;
+                        this.filterByCategory(cat);
+                    });
+                });
+
+                // Search
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.searchGames(e.target.value);
+                });
+            }
+
+            filterByCategory(cat) {
+                this.category = cat;
+                this.filtered = cat === 'all' ? [...this.games] : this.games.filter(g => g.category === cat);
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector(`.category-btn[data-category="${cat}"]`)?.classList.add('active');
+                this.render();
+            }
+
+            searchGames(query) {
+                const q = query.toLowerCase().trim();
+                const base = this.category === 'all' ? this.games : this.games.filter(g => g.category === this.category);
+                if (!q) {
+                    this.filtered = [...base];
+                } else {
+                    this.filtered = base.filter(g =>
+                        g.name.toLowerCase().includes(q) ||
+                        g.description.toLowerCase().includes(q)
+                    );
+                }
+                this.render();
+            }
+
+            render() {
+                const grid = document.getElementById('gamesGrid');
+                grid.innerHTML = '';
+                if (this.filtered.length === 0) {
+                    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;padding:60px 20px;text-align:center;color:#888;">
+                        <div style="font-size:60px;margin-bottom:16px;">🔍</div>
+                        <div style="font-size:18px;">هیچ بازی‌ای پیدا نشد</div>
+                    </div>`;
+                    return;
+                }
+                this.filtered.forEach(game => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+                    card.innerHTML = `
+                        <div class="game-thumbnail">
+                            <span class="play-overlay">▶</span>
+                            ${game.icon}
+                        </div>
+                        <div class="game-info">
+                            <div class="game-title">${game.name}</div>
+                            <div class="game-meta">${game.description}</div>
+                            <div class="game-rating">⭐ ${game.rating}</div>
+                            <div class="game-actions">
+                                <button class="action-btn play" data-id="${game.id}">🎮 بازی کن</button>
+                            </div>
+                        </div>
+                    `;
+                    card.querySelector('.action-btn.play').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.playGame(game.id);
+                    });
+                    grid.appendChild(card);
+                });
+            }
+
+            playGame(id) {
+                const game = this.games.find(g => g.id === id);
+                if (!game) return;
+                const player = document.getElementById('gamePlayer');
+                const canvas = document.getElementById('gameCanvas');
+                document.getElementById('playerGameName').textContent = game.name;
+                document.getElementById('playerStatus').textContent = 'در حال اجرا...';
+                canvas.innerHTML = '';
+                const iframe = document.createElement('iframe');
+                iframe.style.cssText = 'width:100%;height:100%;border:none;background:#0a0a1a;';
+                iframe.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(game.html);
+                canvas.appendChild(iframe);
+                player.classList.add('active');
+            }
+
+            closeGame() {
+                document.getElementById('gamePlayer').classList.remove('active');
+                document.getElementById('gameCanvas').innerHTML = '';
+            }
+
+            refreshGame() {
+                const player = document.getElementById('gamePlayer');
+                if (!player.classList.contains('active')) return;
+                const canvas = document.getElementById('gameCanvas');
+                const iframe = canvas.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = iframe.src;
+                }
+            }
+
+            toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen?.();
+                } else {
+                    document.exitFullscreen?.();
+                }
+            }
+        }
+
+        // ===== INIT =====
+        const app = new App();
+    </script>
+
+</body>
+  </html>
